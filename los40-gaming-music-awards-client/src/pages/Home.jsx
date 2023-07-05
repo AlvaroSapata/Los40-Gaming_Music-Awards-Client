@@ -1,6 +1,6 @@
 import ScaleLoader from "react-spinners/ScaleLoader";
 import React, { useState, useEffect } from "react";
-import {getAllSongsService} from "../services/songs.services"
+import {getAllSongsService, addVoteService} from "../services/songs.services"
 
 function Home() {
 
@@ -18,6 +18,22 @@ function Home() {
     }
   }
 
+  const addvote = async (songId) => {
+    try {
+      await addVoteService(songId)
+      const updatedSong = songs.map((eachSong)=>{
+        if(eachSong.id === songId){
+
+          return {...eachSong,votos: eachSong.votos+1}
+        }
+        return eachSong
+      })
+      setSongs(updatedSong)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     getData();
   }, []);
@@ -31,6 +47,7 @@ function Home() {
           <p>{eachSong.artista}</p>
           <p>{eachSong.juego}</p>
           <p>{eachSong.votos}</p>
+          <button onClick={()=>addvote(eachSong.id)}>Votar</button>
           {/* <iframe src={eachSong.link} frameborder="0"></iframe> */}
           <iframe width="560" height="315" src={eachSong.link} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           

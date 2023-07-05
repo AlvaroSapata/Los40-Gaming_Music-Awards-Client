@@ -4,4 +4,8 @@ const getAllSongsService = () => {
     return service.get("/songs");
 }
 
-export { getAllSongsService}
+const addVoteService = (songId, updatedSong) => {
+    return service.put(`/vote/${songId}`, updatedSong)
+}
+
+export { getAllSongsService, addVoteService}
