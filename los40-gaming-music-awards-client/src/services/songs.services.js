@@ -5,7 +5,7 @@ const getAllSongsService = () => {
 }
 
 const addVoteService = (songId, updatedSong) => {
-    return service.put(`/vote/${songId}`, updatedSong)
+    return service.put(`/songs/vote/${songId}`, updatedSong)
 }
 
 export { getAllSongsService, addVoteService}
