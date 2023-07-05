@@ -4,8 +4,12 @@ const getAllSongsService = () => {
     return service.get("/songs");
 }
 
-const addVoteService = (songId, updatedSong) => {
+const addVoteToSongService = (songId, updatedSong) => {
     return service.put(`/songs/vote/${songId}`, updatedSong)
 }
 
-export { getAllSongsService, addVoteService}
+const updateRemainingVotesService = (userId, votosRestantes) => {
+    console.log(votosRestantes)
+    return service.put(`/songs/${userId}`, votosRestantes)}
+
+export { getAllSongsService, addVoteToSongService,updateRemainingVotesService}

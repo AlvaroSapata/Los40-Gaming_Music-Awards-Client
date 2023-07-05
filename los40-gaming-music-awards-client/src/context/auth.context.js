@@ -25,7 +25,7 @@ function AuthWrapper(props) {
       // desde aqui el usuarario esta logueado
       setIsLoggedIn(true);
       // info del usuario
-      setUser(response.data.payload);
+      setUser(response.data);
       // deja de cargar
       setIsLoading(false);
     } catch (error) {

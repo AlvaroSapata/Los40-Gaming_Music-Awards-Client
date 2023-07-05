@@ -1,38 +1,64 @@
 import ScaleLoader from "react-spinners/ScaleLoader";
-import React, { useState, useEffect } from "react";
-import {getAllSongsService, addVoteService} from "../services/songs.services"
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/auth.context";
+import {
+  getAllSongsService,
+  addVoteToSongService,
+  updateRemainingVotesService
+} from "../services/songs.services";
 
 function Home() {
-
-  const [songs, setSongs] = useState([])
+  const [songs, setSongs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const authContext = useContext(AuthContext);
+  console.log(authContext.user.votosRestantes);
 
   const getData = async () => {
     try {
-      const response = await getAllSongsService()
-      console.log(response.data)
-      setSongs(response.data)
-      setIsLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const addvote = async (songId) => {
-    try {
-      await addVoteService(songId)
-      const updatedSong = songs.map((eachSong)=>{
-        if(eachSong.id === songId){
-
-          return {...eachSong,votos: eachSong.votos+1}
-        }
-        return eachSong
-      })
-      setSongs(updatedSong)
+      const response = await getAllSongsService();
+      console.log(response.data);
+      setSongs(response.data);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  const addVote = async (songId) => {
+    try {
+      // validaciones de si el usuario tiene votos y de si ha votado ya a esa cancion
+      if (authContext.user.votosRestantes <= 0) {
+        console.log("no quedan votos");
+      } else {
+
+        const response = await addVoteToSongService(songId);
+        console.log(response);
+
+        const updatedSong = response.data.song;
+        console.log(updatedSong);
+
+        const updatedSongs = songs.map((eachSong) => {
+          if (eachSong.id === updatedSong.id) {
+            console.log(eachSong);
+            return updatedSong;
+            
+          }
+          return eachSong;
+        });
+
+        // quitar un voto al usuario
+        const updateVotesRemaining = authContext.user.votosRestantes -1
+        console.log(authContext.user)
+        await updateRemainingVotesService(authContext.user._id, updateVotesRemaining)
+        authContext.user.votosRestantes = updateVotesRemaining
+
+        setSongs(updatedSongs);
+        getData();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     getData();
@@ -40,22 +66,32 @@ function Home() {
 
   return (
     <div>
-    {isLoading? <ScaleLoader color="#471971" className="myLoader" />:<div>
-      {songs.map((eachSong)=>(
-        <div key={eachSong.id}>
-          <p>{eachSong.titulo}</p>
-          <p>{eachSong.artista}</p>
-          <p>{eachSong.juego}</p>
-          <p>{eachSong.votos}</p>
-          <button onClick={()=>addvote(eachSong.id)}>Votar</button>
-          {/* <iframe src={eachSong.link} frameborder="0"></iframe> */}
-          <iframe width="560" height="315" src={eachSong.link} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-          
+      {isLoading ? (
+        <ScaleLoader color="#471971" className="myLoader" />
+      ) : (
+        <div>
+          {songs.map((eachSong) => (
+            <div key={eachSong.titulo}>
+              <p>{eachSong.titulo}</p>
+              <p>{eachSong.artista}</p>
+              <p>{eachSong.juego}</p>
+              <p>{eachSong.votos}</p>
+              <button onClick={() => addVote(eachSong.id)}>Votar</button>
+              <iframe
+                width="560"
+                height="315"
+                src={eachSong.link}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>}
+      )}
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
