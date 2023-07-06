@@ -11,7 +11,7 @@ function Home() {
   const [songs, setSongs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const authContext = useContext(AuthContext);
-  console.log(authContext.user.votosRestantes);
+  console.log(authContext.user);
 
   const getData = async () => {
     try {
@@ -23,6 +23,8 @@ function Home() {
       console.log(error);
     }
   };
+
+console.log(authContext.user)
 
   const addVote = async (songId) => {
     try {
@@ -64,13 +66,16 @@ function Home() {
     getData();
   }, []);
 
+  // Ordenar las canciones por número de votos
+  const sortedSongs = songs.sort((a, b) => b.votos - a.votos);
+
   return (
     <div>
       {isLoading ? (
         <ScaleLoader color="#471971" className="myLoader" />
       ) : (
         <div>
-          {songs.map((eachSong) => (
+          {sortedSongs.map((eachSong) => (
             <div key={eachSong.titulo}>
               <p>{eachSong.titulo}</p>
               <p>{eachSong.artista}</p>
