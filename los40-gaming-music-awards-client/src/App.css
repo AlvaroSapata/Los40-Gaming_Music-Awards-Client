@@ -1,38 +1,179 @@
 .App {
   text-align: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.firstContainer {
+  display: flex;
+  /* border: solid black 1px; */
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.positionContainer {
+  background-color: rgb(0, 0, 0);
+  /* background: linear-gradient(to bottom, #FF4536,#FF9100,#D2D100,#60CD4C,#01BED6,#4360C8); */
+  color: white;
+  font-size: 24px;
+  font-weight: 500;
+  width: 30px;
+}
+.positionContainer.first {
+  background-color: red;
+}
+.imgContainer {
+  width: 180px;
+  height: 180px;
+  /* background-color: aqua; */
+  overflow: hidden;
+  margin: 0 15px 0 0;
+}
+/* ajustar imagen */
+.infoContainer {
+  width: 300px;
+  /* background-color: bisque; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0 15px 0 0;
+}
+.votesContainer {
+  width: 200px;
+  /* background-color: cadetblue;  */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+.votesContainer button {
+  background-color: red;
   color: white;
+  border-radius: 5px;
+  border: none;
+  padding: 3px 15px;
+  transition: 0.1s ease;
 }
-
-.App-link {
-  color: #61dafb;
+.votesContainer button:hover {
+  transform: scale(1.05);
+  cursor: pointer;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.votesContainer img {
+  width: 30px;
+  height: 30px;
+  border-radius: 100px;
+  /* border: solid black 1px; */
+  padding: 5px 5px 5px;
+  margin: 20px 0 0 0;
+  transition: 0.1s ease;
+}
+.votesContainer img:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+.secondContainer {
+  display: flex;
+  overflow: hidden;
+}
+.secondContainer.hidden {
+  display: none;
+}
+.lineaContainer {
+  width: 30px;
+  background-color: rgb(0, 0, 0);
+}
+.lineaContainer.first {
+  background-color: red;
+}
+.colorcitosContainer {
+  width: 4px;
+  background: linear-gradient(
+    to bottom,
+    #ff4536,
+    #ff9100,
+    #d2d100,
+    #60cd4c,
+    #01bed6,
+    #4360c8
+  );
+}
+.colorcitosContainer2 {
+  width: 4px;
+  background: linear-gradient(
+    to top,
+    #ff4536,
+    #ff9100,
+    #d2d100,
+    #60cd4c,
+    #01bed6,
+    #4360c8
+  );
+}
+.secondContainer iframe {
+  width: 700px;
+  margin: 10px 0 0 10px;
+}
+.myNavbar {
+  background-color: rgb(0, 0, 0);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  /* margin-bottom: 10px; */
+}
+.navContainer {
+  /* background-color: bisque;  */
+  width: 120px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 10px;
+}
+.navContainer a {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+.navContainer a:hover {
+  transform: scale(1.1);
+}
+.myNavbar img {
+  height: 30px;
+  /* background-color: aliceblue; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ajusteNav {
+  display: flex;
+  flex-direction: row;
+}
+.colorcitosContainer3 {
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    #ff4536,
+    #ff9100,
+    #d2d100,
+    #60cd4c,
+    #01bed6,
+    #4360c8
+  );
+  margin-bottom: 15px;
+}
+.colorcitosContainer4 {
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    #ff4536,
+    #ff9100,
+    #d2d100,
+    #60cd4c,
+    #01bed6,
+    #4360c8
+  );
 }
