@@ -46,7 +46,21 @@ function Login() {
       <pre>
         <h2>Login</h2>
       </pre>
-      <Form onSubmit={handleLogin}>
+      <form onSubmit={handleLogin}>
+        <div className="formGroupContainer">
+          <label >Email:</label>
+          <input type="email" value={email} onChange={handleEmailChange} />
+        </div>
+        <div className="formGroupContainer">
+          <label>Contraseña:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+        </div>
+
+        {/*  <Form onSubmit={handleLogin}>
         <Form.Group className="mb-3">
           <Form.Label>Email</Form.Label>
           <Form.Control
@@ -63,15 +77,15 @@ function Login() {
             value={password}
             onChange={handlePasswordChange}
           />
-        </Form.Group>
+        </Form.Group> */}
 
         <br />
-        <button className="myButtons" type="submit" style={{ width: "auto" }}>
+        <button type="submit" style={{ width: "auto" }}>
           Log In
         </button>
         <br />
         {errorMessage && <p style={{ color: "#03e9f4" }}>{errorMessage}</p>}
-      </Form>
+      </form>
     </div>
   );
 }

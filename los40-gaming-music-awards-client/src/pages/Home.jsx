@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 function Home() {
   const [songs, setSongs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchItem, setSearchItem] = useState("");
   const authContext = useContext(AuthContext);
 
   const [displayContainerIndex, setDisplayContainerIndex] = useState(null);
@@ -21,7 +22,6 @@ function Home() {
   const getData = async () => {
     try {
       const response = await getAllSongsService();
-      console.log(response.data);
       setSongs(response.data);
       setIsLoading(false);
     } catch (error) {
@@ -35,7 +35,7 @@ function Home() {
       setDisplayContainerIndex(null);
       setDisplayArrowUp((prevState) => ({
         ...prevState,
-        [index]: false
+        [index]: false,
       }));
     } else {
       setDisplayContainerIndex(index);
@@ -50,57 +50,56 @@ function Home() {
       });
     }
   };
-  
-
- 
 
   const addVote = async (songId) => {
     try {
-      // validaciones de si el usuario tiene votos y de si ha votado ya a esa cancion
-      console.log(authContext.isLoggedIn);
-      // if(authContext.isLoggedIn){}
-      if (authContext.isLoggedIn && authContext.user.votosRestantes <= 0) {
-        console.log("no quedan votos");
-        toast.error("No te quedan votos, vuelve mañana");
-      } else {
-        const response = await addVoteToSongService(songId);
-        console.log(response);
+      // llamamos al servicio de añadir un voto
+      const response = await addVoteToSongService(songId);
+      console.log(response);
 
-        const updatedSong = response.data.song;
-        console.log(updatedSong);
+      // Guardamos la cancion con los datos actualizados
+      const updatedSong = response.data;
+      console.log(updatedSong);
 
-        const updatedSongs = songs.map((eachSong) => {
-          if (eachSong.id === updatedSong.id) {
-            console.log(eachSong);
-            return updatedSong;
-          }
-          return eachSong;
-        });
+      // Recorremos el array comprobando que coincida el id, si es correcto devolvemos la cancion actualizada, si no, devolvemos la cancion tal cual
+      const updatedSongs = songs.map((eachSong) => {
+        if (eachSong._id === updatedSong._id) {
+          console.log(eachSong);
+          return updatedSong;
+        }
+        return eachSong;
+      });
 
-        // quitar un voto al usuario
-        const updateVotesRemaining = authContext.user.votosRestantes - 1;
-        console.log(authContext.user);
-        await updateRemainingVotesService(
-          authContext.user._id,
-          updateVotesRemaining
-        );
-        authContext.user.votosRestantes = updateVotesRemaining;
-
-        setSongs(updatedSongs);
-        getData();
-      }
+      // Actualizamos el estado, y llamamos a getData para ver los cambios en tiempo real
+      setSongs(updatedSongs);
+      getData();
     } catch (error) {
-      console.log(error);
-      toast.error("Para votar necesitas estar logueado");
+      // Mandamos al toast el error del BE
+      toast.error(error.response.data.error);
     }
   };
+
+  // Funcion para manejar los cambios en la barra de busqueda
+  const handleSearch = (event) => {
+    setSearchItem(event.target.value);
+  };
+
+  // Filtrar canciones según el término de búsqueda
+  const filteredSongs = songs.filter((song) => {
+    const searchRegex = new RegExp(searchItem, "i"); // Expresión regular para hacer la búsqueda sin distinción entre mayúsculas y minúsculas
+    return (
+      searchRegex.test(song.titulo) ||
+      searchRegex.test(song.artista) ||
+      searchRegex.test(song.juego)
+    );
+  });
 
   useEffect(() => {
     getData();
   }, []);
 
   // Ordenar las canciones por número de votos
-  const sortedSongs = songs.sort((a, b) => b.votos - a.votos);
+  const sortedSongs = filteredSongs.sort((a, b) => b.votos - a.votos);
 
   return (
     <div>
@@ -109,9 +108,18 @@ function Home() {
       ) : (
         <div>
           <ToastContainer />
+          {/* Barra de búsqueda */}
+          <div className="searchContainer">
+            <input
+              type="text"
+              value={searchItem}
+              onChange={handleSearch}
+              placeholder="Buscar canciones..."
+            />
+          </div>
           <div className="colorcitosContainer3"></div>
           {sortedSongs.map((eachSong, index) => (
-            <div key={eachSong.id} className="mainContainer">
+            <div key={eachSong._id} className="mainContainer">
               <div className="firstContainer">
                 <div className="colorcitosContainer"></div>
                 <div
@@ -133,7 +141,7 @@ function Home() {
                 </div>
                 <div className="votesContainer">
                   <p>Votos: {eachSong.votos}</p>
-                  <button onClick={() => addVote(eachSong.id)}>Votar</button>
+                  <button onClick={() => addVote(eachSong._id)}>Votar</button>
                   <img
                     src={
                       displayArrowUp[index]

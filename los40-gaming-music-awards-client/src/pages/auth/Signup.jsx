@@ -32,7 +32,7 @@ function Signup() {
       };
 
       await signupService(user);
-      navigate("/auth/login");
+      navigate("/login");
     } catch (error) {
       console.log(error);
       if (error.response.status === 400) {
@@ -60,6 +60,7 @@ function Signup() {
         </Form.Group>
 
         <br />
+        
         <Form.Group className="mb-3">
           <Form.Label>Email</Form.Label>
           <Form.Control
