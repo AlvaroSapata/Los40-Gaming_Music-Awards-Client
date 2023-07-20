@@ -1,10 +1,9 @@
 import ScaleLoader from "react-spinners/ScaleLoader";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import { AuthContext } from "../context/auth.context";
 import {
   getAllSongsService,
   addVoteToSongService,
-  updateRemainingVotesService,
 } from "../services/songs.services";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,38 +13,65 @@ function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchItem, setSearchItem] = useState("");
   const authContext = useContext(AuthContext);
-
   const [displayContainerIndex, setDisplayContainerIndex] = useState(null);
-  // const [displayArrowUp, setDisplayArrowUp] = useState(false);
-  const [displayArrowUp, setDisplayArrowUp] = useState({});
+  const [displayArrowUp, setDisplayArrowUp] = useState(songs.map(() => false));
+
+  // Create a state to store the initial positions of songs
+  const [initialPositions, setInitialPositions] = useState({});
+
+  // Fetch data and update initial positions on mount
+  useEffect(() => {
+    getData();
+  }, []);
 
   const getData = async () => {
     try {
       const response = await getAllSongsService();
-      setSongs(response.data);
+      const sortedSongs = response.data.sort((a, b) => b.votos - a.votos);
+
+      // Save initial positions in state
+      const positionsObject = {};
+      sortedSongs.forEach((song, index) => {
+        positionsObject[song._id] = index + 1;
+      });
+
+      setSongs(sortedSongs);
       setIsLoading(false);
+      setInitialPositions(positionsObject); // Save initial positions
     } catch (error) {
       console.log(error);
     }
   };
 
-  // funcion para que solo aplique los efectos de toggle al elemento especifico
+  // Function to get the initial position of the song based on votes
+  const getInitialPosition = (songId) => {
+    return initialPositions[songId];
+  };
+
+  // Filter and sort the songs whenever the searchItem changes
+  const filteredSongs = useMemo(() => {
+    const searchRegex = new RegExp(searchItem, "i");
+    return songs.filter(
+      (song) =>
+        searchRegex.test(song.titulo) ||
+        searchRegex.test(song.artista) ||
+        searchRegex.test(song.juego)
+    );
+  }, [searchItem, songs]);
+
   const toggleContainer = (index) => {
     if (displayContainerIndex === index) {
       setDisplayContainerIndex(null);
-      setDisplayArrowUp((prevState) => ({
-        ...prevState,
-        [index]: false,
-      }));
+      setDisplayArrowUp((prevState) => {
+        const updatedState = [...prevState];
+        updatedState[index] = false;
+        return updatedState;
+      });
     } else {
       setDisplayContainerIndex(index);
       setDisplayArrowUp((prevState) => {
-        const updatedState = {};
-        for (const key in prevState) {
-          if (prevState.hasOwnProperty(key)) {
-            updatedState[key] = key === index.toString();
-          }
-        }
+        const updatedState = [...prevState];
+        updatedState[index] = true;
         return updatedState;
       });
     }
@@ -84,23 +110,6 @@ function Home() {
     setSearchItem(event.target.value);
   };
 
-  // Filtrar canciones según el término de búsqueda
-  const filteredSongs = songs.filter((song) => {
-    const searchRegex = new RegExp(searchItem, "i"); // Expresión regular para hacer la búsqueda sin distinción entre mayúsculas y minúsculas
-    return (
-      searchRegex.test(song.titulo) ||
-      searchRegex.test(song.artista) ||
-      searchRegex.test(song.juego)
-    );
-  });
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  // Ordenar las canciones por número de votos
-  const sortedSongs = filteredSongs.sort((a, b) => b.votos - a.votos);
-
   return (
     <div>
       {isLoading ? (
@@ -108,6 +117,7 @@ function Home() {
       ) : (
         <div>
           <ToastContainer />
+          <div className="colorcitosContainer3"></div>
           {/* Barra de búsqueda */}
           <div className="searchContainer">
             <input
@@ -117,19 +127,20 @@ function Home() {
               placeholder="Buscar canciones..."
             />
           </div>
-          <div className="colorcitosContainer3"></div>
-          {sortedSongs.map((eachSong, index) => (
+
+          {filteredSongs.map((eachSong, index) => (
             <div key={eachSong._id} className="mainContainer">
               <div className="firstContainer">
                 <div className="colorcitosContainer"></div>
+
                 <div
                   className={
-                    index === 0
+                    getInitialPosition(eachSong._id) === 1
                       ? "positionContainer first"
                       : "positionContainer"
                   }
                 >
-                  <p>{index + 1}</p>
+                  <p>{getInitialPosition(eachSong._id)}</p>
                 </div>
                 <div className="imgContainer">
                   <img src="/imgs/0.jpg" alt="portada" />
