@@ -37,6 +37,9 @@ function Signup() {
       console.log(error);
       if (error.response.status === 400) {
         setErrorMessage(error.response.data.message);
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 3000);
       } else {
         //navigate("/error");
         console.log(error);
@@ -47,60 +50,44 @@ function Signup() {
   return (
     <div className="login-box">
       <pre>
-        <h2>Signup</h2>
+        <h2>Registro</h2>
       </pre>
-      <Form onSubmit={handleSingup}>
-        <Form.Group className="mb-3">
-          <Form.Label>Nombre de usuario</Form.Label>
-          <Form.Control
-            type="text"
-            value={username}
-            onChange={handleUsernameChange}
-          />
-        </Form.Group>
+      <form onSubmit={handleSingup}>
+        <div className="formGroupContainer">
+          <label>Nombre de usuario</label>
+          <input type="text" value={username} onChange={handleUsernameChange} />
+        </div>
 
-        <br />
-        
-        <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            value={email}
-            onChange={handleEmailChange}
-          />
-        </Form.Group>
+        <div className="formGroupContainer">
+          <label>Email</label>
+          <input type="email" value={email} onChange={handleEmailChange} />
+        </div>
 
-        <br />
-
-        <Form.Group className="mb-3">
-          <Form.Label>Contraseña</Form.Label>
-          <Form.Control
+        <div className="formGroupContainer">
+          <label>Contraseña</label>
+          <input
             type="password"
             value={password}
             onChange={handlePasswordChange}
           />
-        </Form.Group>
+        </div>
 
-        <br />
-
-        <Form.Group className="mb-3">
-          <Form.Label>Repite la Contraseña</Form.Label>
-          <Form.Control
+        <div className="formGroupContainer">
+          <label>Repite la Contraseña</label>
+          <input
             type="password"
             value={passwordVerification}
             onChange={handlePasswordChangeVerification}
           />
-        </Form.Group>
-
-        <br />
+        </div>
 
         <button type="submit" className="myButtons">
-          Sign Up
+          Registrar
         </button>
         <pre>
           {errorMessage && <p style={{ color: "#03e9f4" }}>{errorMessage}</p>}
         </pre>
-      </Form>
+      </form>
     </div>
   );
 }

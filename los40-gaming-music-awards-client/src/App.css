@@ -162,7 +162,7 @@
     #01bed6,
     #4360c8
   );
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 .colorcitosContainer4 {
   height: 4px;
@@ -212,4 +212,23 @@
 
 .myLoader {
   margin-top: 30px;
+}
+
+.searchContainer{
+  margin-bottom: 10px;
+}
+.searchContainer input{
+  border-radius:  10px;
+  border: 2px solid black;
+}
+
+.underlineSearch{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.myButtons{
+  margin-top: 20px;
+ 
 }

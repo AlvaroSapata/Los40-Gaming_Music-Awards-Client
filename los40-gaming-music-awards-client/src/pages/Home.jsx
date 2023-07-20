@@ -100,8 +100,13 @@ function Home() {
       setSongs(updatedSongs);
       getData();
     } catch (error) {
+      console.log(error);
       // Mandamos al toast el error del BE
-      toast.error(error.response.data.error);
+      if (!authContext.isLoggedIn) {
+        toast.error("Debes estar logueado para votar");
+      } else {
+        toast.error(error.response.data.error);
+      }
     }
   };
 
@@ -113,10 +118,10 @@ function Home() {
   return (
     <div>
       {isLoading ? (
-        <ScaleLoader color="#471971" className="myLoader" />
+        <ScaleLoader className="myLoader" />
       ) : (
         <div>
-          <ToastContainer />
+          <ToastContainer autoClose={2000} />
           <div className="colorcitosContainer3"></div>
           {/* Barra de búsqueda */}
           <div className="searchContainer">
@@ -124,9 +129,11 @@ function Home() {
               type="text"
               value={searchItem}
               onChange={handleSearch}
-              placeholder="Buscar canciones..."
+              placeholder=" Buscar canciones..."
             />
           </div>
+
+          <div className="colorcitosContainer3"></div>
 
           {filteredSongs.map((eachSong, index) => (
             <div key={eachSong._id} className="mainContainer">

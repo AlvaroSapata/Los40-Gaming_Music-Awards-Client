@@ -36,6 +36,9 @@ function Login() {
       console.log(error);
       if (error.response.status === 400) {
         setErrorMessage(error.response.data.message);
+        setTimeout(() => {
+          setErrorMessage("")
+        }, 3000);
       } else {
         navigate("/");
       }
@@ -48,11 +51,11 @@ function Login() {
       </pre>
       <form onSubmit={handleLogin}>
         <div className="formGroupContainer">
-          <label >Email:</label>
+          <label >Email</label>
           <input type="email" value={email} onChange={handleEmailChange} />
         </div>
         <div className="formGroupContainer">
-          <label>Contraseña:</label>
+          <label>Contraseña</label>
           <input
             type="password"
             value={password}
@@ -60,31 +63,11 @@ function Login() {
           />
         </div>
 
-        {/*  <Form onSubmit={handleLogin}>
-        <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            value={email}
-            onChange={handleEmailChange}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Contraseña</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-        </Form.Group> */}
-
-        <br />
-        <button type="submit" style={{ width: "auto" }}>
+        <button type="submit" className="myButtons">
           Log In
         </button>
-        <br />
-        {errorMessage && <p style={{ color: "#03e9f4" }}>{errorMessage}</p>}
+
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       </form>
     </div>
   );
