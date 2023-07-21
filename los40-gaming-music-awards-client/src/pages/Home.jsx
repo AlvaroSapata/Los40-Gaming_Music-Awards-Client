@@ -18,10 +18,48 @@ function Home() {
 
   // Create a state to store the initial positions of songs
   const [initialPositions, setInitialPositions] = useState({});
+  const [randomSong, setRandomSong] = useState(null);
 
   // Fetch data and update initial positions on mount
   useEffect(() => {
     getData();
+    // Check if a random song was already chosen today
+    const storedDate = localStorage.getItem("randomSongDate");
+    const currentDate = new Date().toDateString();
+
+    if (storedDate === currentDate) {
+      // If a random song was chosen today, use it from local storage
+      const storedRandomSong = JSON.parse(localStorage.getItem("randomSong"));
+      setRandomSong(storedRandomSong);
+    } else {
+      // If no random song was chosen today, fetch a new one
+      getRandomSong();
+    }
+
+    // Show the welcome toast with custom styles
+    toast("Bienvido a los40 Gaming Music Awards", {
+      position: toast.POSITION.TOP_LEFT,
+      autoClose: 800,
+      hideProgressBar: true,
+      closeButton: false,
+      pauseOnFocusLoss: false,
+      pauseOnHover: false,
+
+      style: {
+        width: "97vw",
+        height: "95vh",
+        maxWidth: "100vw",
+        icon: false, // Disable the icon
+        textAlign: "center",
+        backgroundColor: "#4caf50",
+        color: "#fff",
+        padding: "16px",
+        borderRadius: "8px",
+        backgroundColor: "#000",
+        fontSize: "46px",
+      },
+      toastId: "welcome-toast",
+    });
   }, []);
 
   const getData = async () => {
@@ -38,6 +76,27 @@ function Home() {
       setSongs(sortedSongs);
       setIsLoading(false);
       setInitialPositions(positionsObject); // Save initial positions
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // Elige una cancion aleatoria
+  const getRandomSong = async () => {
+    try {
+      const response = await getAllSongsService();
+      const songs = response.data;
+
+      // Choose a random song from the list
+      const randomIndex = Math.floor(Math.random() * songs.length);
+      const randomChosenSong = songs[randomIndex];
+
+      // Store the chosen song and the current date in local storage
+      const currentDate = new Date().toDateString();
+      localStorage.setItem("randomSong", JSON.stringify(randomChosenSong));
+      localStorage.setItem("randomSongDate", currentDate);
+
+      // Update the state with the chosen song
+      setRandomSong(randomChosenSong);
     } catch (error) {
       console.log(error);
     }
@@ -123,6 +182,7 @@ function Home() {
         <div>
           <ToastContainer autoClose={2000} />
           <div className="colorcitosContainer3"></div>
+          {/* Seccion principal */}
           {/* Barra de búsqueda */}
           <div className="searchContainer">
             <input
@@ -133,6 +193,23 @@ function Home() {
             />
           </div>
 
+          <div className="colorcitosContainer3"></div>
+          {/* Random Song */}
+          <div className="randomSongContainer">
+            {randomSong && (
+              <>
+                <h3>Cancion del dia Ballentines</h3>
+                <div className="circularContainer">
+                  <div className="circularImageContainer">
+                    <img src="/imgs/0.jpg" alt="portada" />
+                  </div>
+                  <div className="circularTitle">
+                    <h3>{randomSong.titulo}</h3>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
           <div className="colorcitosContainer3"></div>
 
           {filteredSongs.map((eachSong, index) => (
