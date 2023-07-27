@@ -70,7 +70,6 @@ function Home() {
         maxWidth: "100vw",
         icon: false,
         textAlign: "center",
-        backgroundColor: "#4caf50",
         color: "#fff",
         padding: "16px",
         borderRadius: "8px",
@@ -232,18 +231,6 @@ function Home() {
           <ToastContainer autoClose={2000} />
           <div className="colorcitosContainer3"></div>
           {/* Seccion principal */}
-          {/* Barra de búsqueda */}
-          <div className="searchContainer">
-            <input
-              type="text"
-              value={searchItem}
-              onChange={handleSearch}
-              placeholder=" Buscar canciones..."
-            />
-          </div>
-
-          <div className="colorcitosContainer3"></div>
-          {/* Random Song */}
           <div className="randomSongContainer">
             {randomSong && (
               <>
@@ -294,6 +281,18 @@ function Home() {
           </div>
 
           <div className="colorcitosContainer3"></div>
+          {/* Barra de búsqueda */}
+          <div className="searchContainer">
+            <input
+              type="text"
+              value={searchItem}
+              onChange={handleSearch}
+              placeholder=" Buscar canciones..."
+            />
+          </div>
+
+          <div className="colorcitosContainer3"></div>
+          {/* Random Song */}
 
           {filteredSongs.map((eachSong, index) => (
             <div key={eachSong._id} className="mainContainer">
