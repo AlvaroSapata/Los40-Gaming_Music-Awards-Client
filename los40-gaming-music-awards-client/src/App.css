@@ -284,6 +284,10 @@ body {
   margin: 0px;
 }
 
+.linksRegistroLogin{
+text-decoration: none;
+}
+
 /* Small screens */
 @media (max-width: 768px) {
   /* Adjust styles here for small screens */

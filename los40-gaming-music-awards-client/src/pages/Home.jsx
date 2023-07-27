@@ -4,6 +4,8 @@ import { AuthContext } from "../context/auth.context";
 import {
   getAllSongsService,
   addVoteToSongService,
+  getMostVotedSongOfDayService,
+  getMostVotedSongOfWeekService,
 } from "../services/songs.services";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,6 +22,10 @@ function Home() {
   const [initialPositions, setInitialPositions] = useState({});
   const [randomSong, setRandomSong] = useState(null);
 
+  // Most voted songs
+  const [mostVotedSongOfDay, setMostVotedSongOfDay] = useState(null);
+  const [mostVotedSongOfWeek, setMostVotedSongOfWeek] = useState(null);
+
   // Fetch data and update initial positions on mount
   useEffect(() => {
     getData();
@@ -35,6 +41,9 @@ function Home() {
       // If no random song was chosen today, fetch a new one
       getRandomSong();
     }
+
+    getMostVotedSongOfDay(); // Call this function to fetch most voted song of the day
+    // getMostVotedSongOfWeek(); // Call this function to fetch most voted song of the week
 
     // Show the welcome toast with custom styles
     toast("Bienvido a los40 Gaming Music Awards", {
@@ -174,6 +183,30 @@ function Home() {
     setSearchItem(event.target.value);
   };
 
+  const getMostVotedSongOfDay = async () => {
+    try {
+      // Make an API call to fetch the most voted song of the day
+      // You will need to implement the corresponding backend service
+      const response = await getMostVotedSongOfDayService();
+      setMostVotedSongOfDay(response.data);
+      console.log(`Most voted day`, response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // const getMostVotedSongOfWeek = async () => {
+  //   try {
+  //     // Make an API call to fetch the most voted song of the week
+  //     // You will need to implement the corresponding backend service
+  //     const response = await getMostVotedSongOfWeekService();
+  //     setMostVotedSongOfWeek(response.data);
+  //     console.log(`Most voted week`, response);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   return (
     <div>
       {isLoading ? (
@@ -210,6 +243,40 @@ function Home() {
               </>
             )}
           </div>
+          {/* Most voted song of the day */}
+          <div className="randomSongContainer">
+            {mostVotedSongOfDay && (
+              <>
+                <h3>Cancion mas votada del dia</h3>
+                <div className="circularContainer">
+                  <div className="circularImageContainer">
+                    <img src="/imgs/0.jpg" alt="portada" />
+                  </div>
+                  <div className="circularTitle">
+                    <h3>{mostVotedSongOfDay.titulo}</h3>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Most voted song of the week */}
+          {/* <div className="randomSongContainer">
+            {mostVotedSongOfWeek && (
+              <>
+                <h3>Cancion mas votada de la semana</h3>
+                <div className="circularContainer">
+                  <div className="circularImageContainer">
+                    <img src="/imgs/0.jpg" alt="portada" />
+                  </div>
+                  <div className="circularTitle">
+                    <h3>{mostVotedSongOfWeek.titulo}</h3>
+                  </div>
+                </div>
+              </>
+            )}
+          </div> */}
+
           <div className="colorcitosContainer3"></div>
 
           {filteredSongs.map((eachSong, index) => (

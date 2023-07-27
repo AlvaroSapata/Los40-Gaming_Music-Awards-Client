@@ -88,6 +88,10 @@ function Signup() {
           {errorMessage && <p style={{ color: "#03e9f4" }}>{errorMessage}</p>}
         </pre>
       </form>
+      <div className="linksRegistroLogin">
+        <p>¿Ya tienes una cuenta? </p>
+        <a href="/login">Login</a>
+      </div>
     </div>
   );
 }

@@ -69,6 +69,10 @@ function Login() {
 
         {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       </form>
+      <div className="linksRegistroLogin">
+        <p>¿Aun no te has registrado? </p>
+        <a href="/signup">Registrarse</a>
+      </div>
     </div>
   );
 }
