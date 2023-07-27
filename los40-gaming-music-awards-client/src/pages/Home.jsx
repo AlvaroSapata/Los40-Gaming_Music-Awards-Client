@@ -11,41 +11,51 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Home() {
-  const [songs, setSongs] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchItem, setSearchItem] = useState("");
+  // LLama al contexto
   const authContext = useContext(AuthContext);
+  //* _____ Estados _____
+  //  Almacena la lista de canciones obtenida desde el servidor.
+  const [songs, setSongs] = useState([]);
+  // Indica si se está cargando la información de las canciones desde el servidor. Cuando está en true, se muestra un spinner de carga.
+  const [isLoading, setIsLoading] = useState(true);
+  // Almacena el valor de la barra de búsqueda para filtrar las canciones por título, artista o juego.
+  const [searchItem, setSearchItem] = useState("");
+  // Guarda el índice del contenedor que se debe mostrar con información adicional de una canción cuando el usuario hace clic en la flecha de despliegue.
   const [displayContainerIndex, setDisplayContainerIndex] = useState(null);
+  // Es un array de booleanos que indica si la flecha de despliegue debe apuntar hacia arriba o hacia abajo para cada canción en la lista.
   const [displayArrowUp, setDisplayArrowUp] = useState(songs.map(() => false));
-
-  // Create a state to store the initial positions of songs
+  // Es un objeto que guarda la posición inicial de cada canción en la lista según el número de votos.
   const [initialPositions, setInitialPositions] = useState({});
+  // Guarda la canción aleatoria del día. Se utiliza para mostrar una canción seleccionada al azar en la página.
   const [randomSong, setRandomSong] = useState(null);
-
-  // Most voted songs
+  // Almacena la canción más votada del día.
   const [mostVotedSongOfDay, setMostVotedSongOfDay] = useState(null);
+  // Almacena la canción más votada de la semana.
   const [mostVotedSongOfWeek, setMostVotedSongOfWeek] = useState(null);
 
-  // Fetch data and update initial positions on mount
+  //* _____ Funciones _____
+  // useEffect => Obtiene datos y actualiza al montar
   useEffect(() => {
+    // Obtiene los datos de las canciones desde el servidor y actualiza el estado "songs" con la lista ordenada por votos
     getData();
-    // Check if a random song was already chosen today
+    // Comprueba que se haya elegido la cancion aleatoria
     const storedDate = localStorage.getItem("randomSongDate");
     const currentDate = new Date().toDateString();
 
     if (storedDate === currentDate) {
-      // If a random song was chosen today, use it from local storage
+      // Si ya se ha elegido la cancion hoy, la cogemos del localStorage
       const storedRandomSong = JSON.parse(localStorage.getItem("randomSong"));
       setRandomSong(storedRandomSong);
     } else {
-      // If no random song was chosen today, fetch a new one
+      // Si no, llamamos a la funcion para obtener una nueva
       getRandomSong();
     }
+    // Obtiene la cancion mas votada del dia
+    getMostVotedSongOfDay();
+    // Obtiene la cancion mas votada del dia
+    getMostVotedSongOfWeek();
 
-    getMostVotedSongOfDay(); // Call this function to fetch most voted song of the day
-    // getMostVotedSongOfWeek(); // Call this function to fetch most voted song of the week
-
-    // Show the welcome toast with custom styles
+    // Muestra el toast de bienvenida con sus estilos
     toast("Bienvido a los40 Gaming Music Awards", {
       position: toast.POSITION.TOP_LEFT,
       autoClose: 800,
@@ -58,7 +68,7 @@ function Home() {
         width: "97vw",
         height: "95vh",
         maxWidth: "100vw",
-        icon: false, // Disable the icon
+        icon: false,
         textAlign: "center",
         backgroundColor: "#4caf50",
         color: "#fff",
@@ -71,53 +81,59 @@ function Home() {
     });
   }, []);
 
+  // Realiza una llamada al servidor para obtener la lista de canciones y las ordena por la cantidad de votos. Actualiza los estados de songs, isLoading, y initialPositions.
   const getData = async () => {
     try {
+      // Obtiene la lista de canciones del BE
       const response = await getAllSongsService();
+      // Ordena por cantidad de votos
       const sortedSongs = response.data.sort((a, b) => b.votos - a.votos);
 
-      // Save initial positions in state
+      // Crea un objeto vacio para almacenar las posiciones iniciales
       const positionsObject = {};
+      // Se itera en la lista de canciones dandoles su posicion inicial
       sortedSongs.forEach((song, index) => {
         positionsObject[song._id] = index + 1;
       });
-
+      // Se actualizan los estados
       setSongs(sortedSongs);
       setIsLoading(false);
-      setInitialPositions(positionsObject); // Save initial positions
+      setInitialPositions(positionsObject);
     } catch (error) {
       console.log(error);
     }
   };
-  // Elige una cancion aleatoria
+  // Realiza una llamada al servidor para obtener todas las canciones y luego elige una canción al azar de esa lista. Guarda la canción aleatoria seleccionada en el estado randomSong y también la fecha actual en el almacenamiento local para recordar qué canción se eligió ese día.
   const getRandomSong = async () => {
     try {
+      // Obtiene la lista de canciones del BE
       const response = await getAllSongsService();
       const songs = response.data;
 
-      // Choose a random song from the list
+      // Elige una cancion aleatoria de la lista
       const randomIndex = Math.floor(Math.random() * songs.length);
       const randomChosenSong = songs[randomIndex];
 
-      // Store the chosen song and the current date in local storage
+      // Guarda la cancion elegida y la fecha ( String )
       const currentDate = new Date().toDateString();
       localStorage.setItem("randomSong", JSON.stringify(randomChosenSong));
       localStorage.setItem("randomSongDate", currentDate);
 
-      // Update the state with the chosen song
+      // Actualiza el estado
       setRandomSong(randomChosenSong);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Function to get the initial position of the song based on votes
+  // Devuelve la posición inicial de una canción en la lista según la cantidad de votos. Utiliza el estado initialPositions para obtener esta información.
   const getInitialPosition = (songId) => {
     return initialPositions[songId];
   };
 
-  // Filter and sort the songs whenever the searchItem changes
+  // Filtra y ordena cuando las dependencias cambian
   const filteredSongs = useMemo(() => {
+    // Sin distincion entre mayusculas y minusculas
     const searchRegex = new RegExp(searchItem, "i");
     return songs.filter(
       (song) =>
@@ -127,6 +143,7 @@ function Home() {
     );
   }, [searchItem, songs]);
 
+  // Maneja el despliegue/ocultación del contenedor de información adicional de una canción cuando el usuario hace clic en la flecha de despliegue.
   const toggleContainer = (index) => {
     if (displayContainerIndex === index) {
       setDisplayContainerIndex(null);
@@ -145,6 +162,7 @@ function Home() {
     }
   };
 
+  // Maneja el proceso de votación de una canción. Realiza una llamada al servidor para agregar un voto a la canción seleccionada y luego actualiza los estados de songs, mostVotedSongOfDay, y mostVotedSongOfWeek con la información actualizada después de votar
   const addVote = async (songId) => {
     try {
       // llamamos al servicio de añadir un voto
@@ -164,9 +182,11 @@ function Home() {
         return eachSong;
       });
 
-      // Actualizamos el estado, y llamamos a getData para ver los cambios en tiempo real
+      // Actualizamos el estado, y llamamos a los get para ver los cambios en tiempo real
       setSongs(updatedSongs);
       getData();
+      getMostVotedSongOfDay();
+      getMostVotedSongOfWeek();
     } catch (error) {
       console.log(error);
       // Mandamos al toast el error del BE
@@ -178,34 +198,30 @@ function Home() {
     }
   };
 
-  // Funcion para manejar los cambios en la barra de busqueda
+  // Maneja los cambios en la barra de búsqueda y actualiza el estado searchItem con el valor ingresado por el usuario.
   const handleSearch = (event) => {
     setSearchItem(event.target.value);
   };
 
+  // Realiza una llamada al servidor para obtener la canción más votada del día y actualiza el estado mostVotedSongOfDay.
   const getMostVotedSongOfDay = async () => {
     try {
-      // Make an API call to fetch the most voted song of the day
-      // You will need to implement the corresponding backend service
       const response = await getMostVotedSongOfDayService();
       setMostVotedSongOfDay(response.data);
-      console.log(`Most voted day`, response);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const getMostVotedSongOfWeek = async () => {
-  //   try {
-  //     // Make an API call to fetch the most voted song of the week
-  //     // You will need to implement the corresponding backend service
-  //     const response = await getMostVotedSongOfWeekService();
-  //     setMostVotedSongOfWeek(response.data);
-  //     console.log(`Most voted week`, response);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  // Realiza una llamada al servidor para obtener la canción más votada de la semana y actualiza el estado mostVotedSongOfWeek.
+  const getMostVotedSongOfWeek = async () => {
+    try {
+      const response = await getMostVotedSongOfWeekService();
+      setMostVotedSongOfWeek(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
@@ -261,7 +277,7 @@ function Home() {
           </div>
 
           {/* Most voted song of the week */}
-          {/* <div className="randomSongContainer">
+          <div className="randomSongContainer">
             {mostVotedSongOfWeek && (
               <>
                 <h3>Cancion mas votada de la semana</h3>
@@ -275,7 +291,7 @@ function Home() {
                 </div>
               </>
             )}
-          </div> */}
+          </div>
 
           <div className="colorcitosContainer3"></div>
 

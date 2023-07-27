@@ -2,11 +2,9 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/auth.context";
 import { loginService } from "../../services/auth.services";
-import Form from "react-bootstrap/Form";
 
 function Login() {
   const { authenticateUser } = useContext(AuthContext);
-
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -37,7 +35,7 @@ function Login() {
       if (error.response.status === 400) {
         setErrorMessage(error.response.data.message);
         setTimeout(() => {
-          setErrorMessage("")
+          setErrorMessage("");
         }, 3000);
       } else {
         navigate("/");
@@ -51,7 +49,7 @@ function Login() {
       </pre>
       <form onSubmit={handleLogin}>
         <div className="formGroupContainer">
-          <label >Email</label>
+          <label>Email</label>
           <input type="email" value={email} onChange={handleEmailChange} />
         </div>
         <div className="formGroupContainer">

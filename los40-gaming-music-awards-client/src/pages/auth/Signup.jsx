@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signupService } from "../../services/auth.services";
-import Form from "react-bootstrap/Form";
 
 function Signup() {
   const navigate = useNavigate();
