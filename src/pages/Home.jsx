@@ -43,9 +43,12 @@ function Home() {
     const currentDate = new Date().toDateString();
 
     if (storedDate === currentDate) {
-      // Si ya se ha elegido la cancion hoy, la cogemos del localStorage
-      const storedRandomSong = JSON.parse(localStorage.getItem("randomSong"));
-      setRandomSong(storedRandomSong);
+      const storedRandomSong = localStorage.getItem("randomSong");
+      if (storedRandomSong) {
+        setRandomSong(JSON.parse(storedRandomSong));
+      } else {
+        setRandomSong(null); // Set to null if randomSong data is not found in localStorage
+      }
     } else {
       // Si no, llamamos a la funcion para obtener una nueva
       getRandomSong();
