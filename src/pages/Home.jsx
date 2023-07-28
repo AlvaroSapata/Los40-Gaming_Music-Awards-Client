@@ -44,7 +44,7 @@ function Home() {
 
     if (storedDate === currentDate) {
       const storedRandomSong = localStorage.getItem("randomSong");
-      if (!storedRandomSong) {
+      if (storedRandomSong === undefined || !storedRandomSong) {
         setRandomSong(null); // Set to null if randomSong data is not found in localStorage
       } else {
         setRandomSong(JSON.parse(storedRandomSong));
