@@ -6,6 +6,7 @@ import {
   addVoteToSongService,
   getMostVotedSongOfDayService,
   getMostVotedSongOfWeekService,
+  getSongOfTheDayService,
 } from "../services/songs.services";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -38,21 +39,10 @@ function Home() {
   useEffect(() => {
     // Obtiene los datos de las canciones desde el servidor y actualiza el estado "songs" con la lista ordenada por votos
     getData();
-    // Comprueba que se haya elegido la cancion aleatoria
-    const storedDate = localStorage.getItem("randomSongDate");
-    const currentDate = new Date().toDateString();
-
-    if (storedDate === currentDate) {
-      const storedRandomSong = localStorage.getItem("randomSong");
-      if (storedRandomSong === undefined || !storedRandomSong) {
-        setRandomSong(null); // Set to null if randomSong data is not found in localStorage
-      } else {
-        setRandomSong(JSON.parse(storedRandomSong));
-      }
-    } else {
-      // Si no, llamamos a la funcion para obtener una nueva
-      getRandomSong();
-    }
+    // Obtiene la cancion aleatoria
+    getSongOfTheDayService().then((response) => {
+      setRandomSong(response.data);
+    });
     // Obtiene la cancion mas votada del dia
     getMostVotedSongOfDay();
     // Obtiene la cancion mas votada del dia
@@ -101,28 +91,6 @@ function Home() {
       setSongs(sortedSongs);
       setIsLoading(false);
       setInitialPositions(positionsObject);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  // Realiza una llamada al servidor para obtener todas las canciones y luego elige una canción al azar de esa lista. Guarda la canción aleatoria seleccionada en el estado randomSong y también la fecha actual en el almacenamiento local para recordar qué canción se eligió ese día.
-  const getRandomSong = async () => {
-    try {
-      // Obtiene la lista de canciones del BE
-      const response = await getAllSongsService();
-      const songs = response.data;
-
-      // Elige una cancion aleatoria de la lista
-      const randomIndex = Math.floor(Math.random() * songs.length);
-      const randomChosenSong = songs[randomIndex];
-
-      // Guarda la cancion elegida y la fecha ( String )
-      const currentDate = new Date().toDateString();
-      localStorage.setItem("randomSong", JSON.stringify(randomChosenSong));
-      localStorage.setItem("randomSongDate", currentDate);
-
-      // Actualiza el estado
-      setRandomSong(randomChosenSong);
     } catch (error) {
       console.log(error);
     }
@@ -295,7 +263,7 @@ function Home() {
           </div>
 
           <div className="colorcitosContainer3"></div>
-          {/* Random Song */}
+          {/* Lista de Canciones */}
 
           {filteredSongs.map((eachSong, index) => (
             <div key={eachSong._id} className="mainContainer">
