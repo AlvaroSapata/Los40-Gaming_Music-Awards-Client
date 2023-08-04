@@ -179,7 +179,7 @@ body {
     #01bed6,
     #4360c8
   );
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   position: sticky;
   top: 40px;
   z-index: 1;
@@ -236,12 +236,20 @@ body {
 }
 
 .searchContainer {
-  margin-bottom: 10px;
-  margin-top: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  position: sticky;
+  top: 43px;
+  background-color:#F5F5F5;
+  background: linear-gradient(to right, transparent, #f5f5f5, transparent);
+  width: 700px;
+  margin: auto;
 }
 .searchContainer input {
-  border-radius: 10px;
+  border-radius: 15px;
   border: 2px solid black;
+  height: 20px;
+  width: 300px;
 }
 
 .underlineSearch {
