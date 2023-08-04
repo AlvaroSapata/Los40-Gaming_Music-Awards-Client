@@ -194,139 +194,151 @@ function Home() {
   };
 
   return (
-    <div>
+    <div className="home-container">
       {isLoading ? (
         <ScaleLoader className="myLoader" />
       ) : (
-        <div>
+        <>
           <ToastContainer autoClose={2000} />
-          <div className="colorcitosContainer3"></div>
-          {/* Seccion principal */}
-          <div className="randomSongContainer">
-            {randomSong && (
-              <>
-                <h3>Cancion del dia Ballentines</h3>
-                <div className="circularContainer">
-                  <div className="circularImageContainer">
-                    <img src="/imgs/0.jpg" alt="portada" />
-                  </div>
-                  <div className="circularTitle">
-                    <h3>{randomSong.titulo}</h3>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-          {/* Most voted song of the day */}
-          <div className="randomSongContainer">
-            {mostVotedSongOfDay && (
-              <>
-                <h3>Cancion mas votada del dia</h3>
-                <div className="circularContainer">
-                  <div className="circularImageContainer">
-                    <img src="/imgs/0.jpg" alt="portada" />
-                  </div>
-                  <div className="circularTitle">
-                    <h3>{mostVotedSongOfDay.titulo}</h3>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
+          {/* Definir el grid layout */}
+          <div className="grid-container">
+            <div className="colorcitosContainer3"></div>
+            {/* Fila 1 */}
+            <div className="searchContainer">
+              <input
+                type="text"
+                value={searchItem}
+                onChange={handleSearch}
+                placeholder=" Buscar canciones..."
+              />
+            </div>
 
-          {/* Most voted song of the week */}
-          <div className="randomSongContainer">
-            {mostVotedSongOfWeek && (
-              <>
-                <h3>Cancion mas votada de la semana</h3>
-                <div className="circularContainer">
-                  <div className="circularImageContainer">
-                    <img src="/imgs/0.jpg" alt="portada" />
-                  </div>
-                  <div className="circularTitle">
-                    <h3>{mostVotedSongOfWeek.titulo}</h3>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
 
-          <div className="colorcitosContainer3"></div>
-          {/* Barra de búsqueda */}
-          <div className="searchContainer">
-            <input
-              type="text"
-              value={searchItem}
-              onChange={handleSearch}
-              placeholder=" Buscar canciones..."
-            />
-          </div>
-
-          <div className="colorcitosContainer3"></div>
-          {/* Lista de Canciones */}
-
-          {filteredSongs.map((eachSong, index) => (
-            <div key={eachSong._id} className="mainContainer">
-              <div className="firstContainer">
-                <div className="colorcitosContainer"></div>
-
-                <div
-                  className={
-                    getInitialPosition(eachSong._id) === 1
-                      ? "positionContainer first"
-                      : "positionContainer"
-                  }
-                >
-                  <p>{getInitialPosition(eachSong._id)}</p>
+            <div className="mainContainer">
+              <div className="highlightedSongs">
+                <div className="randomSongContainer">
+                  {randomSong && (
+                    <>
+                      <h3>Cancion del dia Ballentines</h3>
+                      <div className="circularContainer">
+                        <div className="circularImageContainer">
+                          <img src="/imgs/0.jpg" alt="portada" />
+                        </div>
+                        <div className="circularTitle">
+                          <h3>{randomSong.titulo}</h3>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className="imgContainer">
-                  <img src="/imgs/0.jpg" alt="portada" />
+
+                <div className="randomSongContainer">
+                  {/* Cancion mas votada del dia */}
+                  {mostVotedSongOfDay && (
+                    <>
+                      <h3>Cancion mas votada del dia</h3>
+                      <div className="circularContainer">
+                        <div className="circularImageContainer">
+                          <img src="/imgs/0.jpg" alt="portada" />
+                        </div>
+                        <div className="circularTitle">
+                          <h3>{mostVotedSongOfDay.titulo}</h3>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className="infoContainer">
-                  <h3>{eachSong.titulo}</h3>
-                  <p>{eachSong.artista}</p>
-                  <p>{eachSong.juego}</p>
-                </div>
-                <div className="votesContainer">
-                  <p>Votos: {eachSong.votos}</p>
-                  <button onClick={() => addVote(eachSong._id)}>Votar</button>
-                  <img
-                    src={
-                      displayArrowUp[index]
-                        ? "/imgs/arrow top.png"
-                        : "/imgs/arrow bottom.png"
-                    }
-                    alt="down"
-                    onClick={() => toggleContainer(index)}
-                  />
+
+                <div className="randomSongContainer">
+                  {/* Cancion mas votada de la semana */}
+                  {mostVotedSongOfWeek && (
+                    <>
+                      <h3>Cancion mas votada de la semana</h3>
+                      <div className="circularContainer">
+                        <div className="circularImageContainer">
+                          <img src="/imgs/0.jpg" alt="portada" />
+                        </div>
+                        <div className="circularTitle">
+                          <h3>{mostVotedSongOfWeek.titulo}</h3>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
-              <div
-                className={
-                  displayContainerIndex === index
-                    ? "secondContainer"
-                    : "secondContainer hidden"
-                }
-              >
-                <div className="colorcitosContainer2"></div>
-                <div
-                  className={
-                    index === 0 ? "lineaContainer first" : "lineaContainer"
-                  }
-                ></div>
-                <iframe
-                  width="560"
-                  height="315"
-                  src={eachSong.link}
-                  title="YouTube video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                ></iframe>
+
+              <div className="songs-container">
+                {/* Lista de Canciones */}
+
+                {filteredSongs.map((eachSong, index) => (
+                  <div key={eachSong._id} className="Container0">
+                    <div className="firstContainer">
+                      <div className="colorcitosContainer"></div>
+
+                      <div
+                        className={
+                          getInitialPosition(eachSong._id) === 1
+                            ? "positionContainer first"
+                            : "positionContainer"
+                        }
+                      >
+                        <p>{getInitialPosition(eachSong._id)}</p>
+                      </div>
+                      <div className="imgContainer">
+                        <img src="/imgs/0.jpg" alt="portada" />
+                      </div>
+                      <div className="infoContainer">
+                        <h3>{eachSong.titulo}</h3>
+                        <p>{eachSong.artista}</p>
+                        <p>{eachSong.juego}</p>
+                      </div>
+                      <div className="votesContainer">
+                        <p>Votos: {eachSong.votos}</p>
+                        <button onClick={() => addVote(eachSong._id)}>
+                          Votar
+                        </button>
+                        <img
+                          src={
+                            displayArrowUp[index]
+                              ? "/imgs/arrow top.png"
+                              : "/imgs/arrow bottom.png"
+                          }
+                          alt="down"
+                          onClick={() => toggleContainer(index)}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className={
+                        displayContainerIndex === index
+                          ? "secondContainer"
+                          : "secondContainer hidden"
+                      }
+                    >
+                      <div className="colorcitosContainer2"></div>
+                      <div
+                        className={
+                          index === 0
+                            ? "lineaContainer first"
+                            : "lineaContainer"
+                        }
+                      ></div>
+                      <iframe
+                        width="560"
+                        height="315"
+                        src={eachSong.link}
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        </>
       )}
     </div>
   );
