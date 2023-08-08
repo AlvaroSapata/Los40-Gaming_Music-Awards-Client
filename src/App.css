@@ -392,6 +392,9 @@ body {
     gap: 20px;
     flex-wrap: wrap;
   }
+  .secondContainer iframe {
+    height: 200px;
+  }
   .votesContainer {
     width: 120px;
   }
