@@ -395,6 +395,13 @@ body {
   .secondContainer iframe {
     height: 200px;
   }
+  .searchContainer {
+    display: flex;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    margin: auto auto;
+  }
   .votesContainer {
     width: 120px;
   }
