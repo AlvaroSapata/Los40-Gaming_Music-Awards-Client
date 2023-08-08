@@ -51,7 +51,7 @@ function Home() {
     // Muestra el toast de bienvenida con sus estilos
     toast("Bienvido a los40 Gaming Music Awards", {
       position: toast.POSITION.TOP_LEFT,
-      autoClose: 800,
+      autoClose: 700,
       hideProgressBar: true,
       closeButton: false,
       pauseOnFocusLoss: false,
